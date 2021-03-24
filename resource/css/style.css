@@ -50,3 +50,20 @@
     background-color: #007bff;
     color: #fff;
 }
+
+#user-icon i{
+    font-size: 1.3em;
+    color: #ffffff;
+}
+
+
+#form-info-user{
+    width: 300px;
+    /*margin-right: 200px;*/
+}
+
+#user-login-btn-info{
+    color: #ffffff;
+}
+
+

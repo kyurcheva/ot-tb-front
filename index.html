@@ -13,12 +13,33 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active ">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="#home" onclick="goHome()">Home</a>
                 </li>
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item active">
+
+            <ul class="navbar-nav navbar-left-nav">
+                <li id="sign-in-link" class="nav-item active">
                     <a class="nav-link" href="#authorization">Sign IN</a>
+                </li>
+                <li id="info-user" class="nav-item active">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ROLE
+                        </a>
+                        <div class="dropdown-menu">
+                            <form id="form-info-user" class="">
+                                <div class="form-group">
+                                    <p>Login</p>
+                                    <p>Имя</p>
+                                    <p>Фамилия</p>
+                                    <p>Отчество</p>
+                                </div>
+                                <div class="form-group">
+                                    <p>Email</p>
+                                <button type="button" class="btn btn-primary">Log out</button>
+                            </form>
+                        </div>
+                    </div>
                 </li>
             </ul>
         <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,15 +48,17 @@
       </nav>
 
       <div id="app">
-          <div class="list-group content-width">
-              <a href="#" class="list-group-item list-group-item-action">Список виртуальных столов</a>
-              <a href="#" class="list-group-item list-group-item-action">Документы для согласования</a>
-          </div>
+
       </div>
         <script src="resource/jquery-3.5.1.min.js"></script>
+        <script src="resource/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
+
+        <script src="js/logic.js"></script>
         <script src="js/route.js"></script>
         <script src="js/router.js"></script>
         <script src="js/app.js"></script>
-        <script src="js/logic.js"></script>
+
+      <!-- Скрипт, вызывающий модальное окно после загрузки страницы -->
+
   </body>
 </html>
