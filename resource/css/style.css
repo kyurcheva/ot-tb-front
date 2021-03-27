@@ -59,6 +59,7 @@
 
 #form-info-user{
     width: 300px;
+    padding: 20px;
     /*margin-right: 200px;*/
 }
 
@@ -66,4 +67,17 @@
     color: #ffffff;
 }
 
+#icon-user{
+    font-size: 1.7em;
+}
+#info-user .dropdown-menu{
+    left: -150px;
+    color: #495057;
+}
+
+
+
+#info-user .dropdown-menu .btn-log-out{
+   text-align: right;
+}
 
