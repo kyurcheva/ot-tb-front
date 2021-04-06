@@ -4,7 +4,11 @@ $('.dropdown').click(function(){
 });
 
 window.addEventListener('hashchange', function(e) {
-    $('body').children('.point').remove();
+
+    if (window.location.hash != '#templateDesktop'){
+        $('body').children('.point').remove();
+        $('body').children('.content-template-list').remove();
+    }
     if (window.location.hash != '#existingTables'){
         $('body').children('.table-desktop').remove();
     }
@@ -153,6 +157,55 @@ function appendDom(container, jsonData) {
     }
 }
 
+function appendElement(container, jsonData){
+    for (var i = 0; i <jsonData.length; i++) {
+        /*var $divParent  = $("<ul class='elem'><li></li></ul>");
+        $divParent.children().last().text(jsonData[i].name).attr('id',jsonData[i].name );
+        if (jsonData[i].children) {
+            appendDom($divParent.children().last(), jsonData[i].children);
+        }*/
+
+        var $divParent  = $("<ul class=\"Container\">\n" +
+            "  <li class=\"Node ExpandOpen\">\n" +
+            "    <div class=\"Expand\"><i class=\"fa fa-chevron-circle-right\" aria-hidden=\"true\"></i></div>\n" +
+            "    <div class=\"Content\"><span>   </span></div>\n" +
+            "  </li>\n" +
+            "</ul>\n");
+        $divParent.attr('id',jsonData[i].name );
+        $divParent.find('.Content').text(jsonData[i].name);
+        if (jsonData[i].children) {
+            appendElement($divParent.find('.Node'), jsonData[i].children);
+        }
+        container.append($divParent);
+    }
+}
+
+function appendElementCheck(container, jsonData){
+    for (var i = 0; i <jsonData.length; i++) {
+        /*var $divParent  = $("<ul class='elem'><li></li></ul>");
+        $divParent.children().last().text(jsonData[i].name).attr('id',jsonData[i].name );
+        if (jsonData[i].children) {
+            appendDom($divParent.children().last(), jsonData[i].children);
+        }*/
+
+        var $divParent  = $("<ul class=\"Container\">\n" +
+            "  <li class=\"Node ExpandOpen\">\n" +
+            "    <div class=\"Expand\"><input type=\"checkbox\" class=\"form-check-input\"></div>\n" +
+            "    <div class=\"Content\"><span>   </span></div>\n" +
+            "  </li>\n" +
+            "</ul>\n");
+        $divParent.attr('id',jsonData[i].name );
+        $divParent.find('.Content').text(jsonData[i].name);
+        if (jsonData[i].children) {
+            appendElementCheck($divParent.find('.Node'), jsonData[i].children);
+        }
+        container.append($divParent);
+    }
+}
+
+
+
+
 
 var json22 = {
     "name": "template",
@@ -215,9 +268,31 @@ var json22 = {
 
 //////////////////При нажатии на шаблон виртуальных столов
 
-var templateMarker = false;
+var $templateDesktop;
+var templateMarker = true;
 $(document).on('click', '#template-point', function(e) {
     //По хорошему, тут нужно сначала отправить запрос. И есть вернется null отображать диалоговое окно
+    //appendDom($('body'), json22.folderStructure);
+    /*
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/template",
+        success: function (response) {
+            console.log(response);
+            window.location.hash = '#templateDesktop';
+            console.log('Привте');
+            console.log(response.folderStructure);
+            appendDom($('body'), response.folderStructure);
+        },
+        error: function (e) {
+            alert('Ошибка сервера');
+        },
+        complete: function(){
+            appendDom($('body'), json22.folderStructure);
+        }
+    });*/
+
+
     if (templateMarker) {
         $.ajax({
             type: "GET",
@@ -225,9 +300,17 @@ $(document).on('click', '#template-point', function(e) {
             success: function (response) {
                 console.log(response);
                 window.location.hash = '#templateDesktop';
-                console.log('Rjkfnnggd');
+                console.log('Привте');
                 console.log(response.folderStructure);
-                appendDom($('body'), response.folderStructure);
+                //appendDom($('body'), response.folderStructure);
+                //$('body').append("<div class=\'content-template-list\'></div>");
+                $('script:first').before("<div class=\'content-template-list content-width-2\'></div>");
+                var ctl = $('body').children('.content-template-list');
+                appendElement(ctl, response.folderStructure);
+                $templateDesktop = $('body').find('.content-template-list');
+                console.log(templateDesktop);
+               // appendElement($('body'), response.folderStructure);
+               // $('body').append("</div>");
             },
             error: function (e) {
                 alert('Ошибка сервера');
@@ -241,24 +324,19 @@ $(document).on('click', '#template-point', function(e) {
             console.log("отмена");
         }
     }
-
 });
 
 ///Шаблон виртуального стола, клик по элементу. Свернуть\развернуть список
-$(document).on('click', 'span', function(e) {
-        if ($(e.target).parent().children('.point').hasClass('hide')){
-            $(e.target).parent().children('.point').show();
-            $(e.target).parent().children('.point').removeClass('hide');
-            if ($(e.target).parent().children('.point').length > 0){
-                $(e.target).parent().children('ch').text('-');
-            }
-        } else{
-            $(e.target).parent().children('.point').hide();
-            $(e.target).parent().children('.point').addClass('hide');
+$(document).on('click', '.Expand', function(e) {
+    console.log($(e.target).parent());
 
-            if ($(e.target).parent().children('.point').length > 0){
-                $(e.target).parent().children('ch').text('+');
-            }
+        if ($(e.target).parent().children('.Node').hasClass('hide')){
+            $(e.target).parent().children('.Node').show();
+            $(e.target).parent().children('.Node').removeClass('hide');
+        }
+        else {
+            $(e.target).parent().children('.Node').hide();
+            $(e.target).parent().children('.Node').addClass('hide');
         }
 });
 
@@ -315,19 +393,101 @@ $(document).on('click', '.name-desktop', function(e) {
 $(document).on('click', '#create-desktop', function(e) {
    window.location.hash = "#createDesktop";
     console.log('Create desktop');
+    $('script:first').before("<div class=\"content-width-2\">\n" +
+        "    <div class=\"title-page\">\n" +
+        "        <h2>Страница создания виртуального стола</h2>\n" +
+        "    </div>\n" +
+        "    <form>\n" +
+        "        <div class=\"row\">\n" +
+        "            <div class=\"col-6\">\n" +
+        "                <div class=\"form-group\">\n" +
+        "                    <label for=\"desktop-name\">Название</label>\n" +
+        "                    <input type=\"text\" class=\"form-control\" id=\"desktop-name\" placeholder=\"Example input\">\n" +
+        "                </div>\n" +
+        "                <div class=\"form-group\">\n" +
+        "                    <label for=\"desktop-organization\">Организация</label>\n" +
+        "                    <input type=\"text\" class=\"form-control\" id=\"desktop-organization\" placeholder=\"Example input\">\n" +
+        "                </div>\n" +
+        "            </div>\n" +
+        "            <div class=\"col-6\">\n" +
+        "                <!--<div class=\"form-group\">\n" +
+        "                    <label for=\"text-area-template\">Шаблон виртуального стола</label>\n" +
+        "                    <textarea class=\"form-control\" id=\"text-area-template\" rows=\"10\"></textarea>\n" +
+        "                </div>-->\n" +
+        "                <div class=\"form-group\">\n" +
+        "                    <div class=\"create-desktop-template\"></div>\n" +
+        "                </div>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "        <div class=\"row\">\n" +
+        "            <div class=\"col center\">\n" +
+        "                <button id=\"save-desktop\" type=\"button\" class=\"btn btn-primary\">Сохранить</button>\n" +
+        "                <button type=\"button\" class=\"btn btn-primary\">Отмена</button>\n" +
+        "            </div>\n" +
+        "            <div class=\"col\">\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "    </form>\n" +
+        "</div>");
+        appendElementCheck($(".create-desktop-template"), json22.folderStructure);
+
 });
+
+//При клике чекбокса в списка иерархии устанавливается класс на родительский ul
+$(document).on('click', '.form-check-input', function(e) {
+    if ($(e.target).prop('checked')){
+        $(e.target).parent().parent().parent().addClass('checked');
+    } else {
+        $(e.target).parent().parent().parent().removeClass('checked');
+    }
+    //console.log($(e.target).parent().parent().parent());
+});
+
+
+//функция генерации массива из выбранной иехархии папок при создании виртуальног стола
+var array = [];
+function lili(parent, array){
+    for (var i = 0; i < parent.length; i++){
+            if (parent.eq(i).hasClass('checked')){
+
+                var object = {
+                    name: parent.eq(i).attr('id'),
+                    children: []
+                };
+                array.push(object);
+                //console.log(array);
+                lili(parent.eq(i).children('li').children('ul'), array[i]['children']);
+            }
+    }
+    return array;
+}
+
+
 
 //Клик на кнопку "Сохранить шаблон"
 $(document).on('click', '#save-template', function(e) {
     window.location.hash = "#templateDesktop";
+    //Тут должен быть Post завтрос отправляющий на бек шаблон виртуального стола
 });
 //Клик на кнопку "Отмена сохранения"
 $(document).on('click', '#cancel-template', function(e) {
     window.location.hash = "#adminHomePage";
 });
+//Клик на кнопку "Сохранить виртуальный стол"
+$(document).on('click', '#save-desktop', function(e) {
+    array = [];
+    console.log(lili($('.create-desktop-template').children('ul'), array));
+
+    //Здесь должен быть подзапрос POST с отправкой, наименования, огранизации и структуры. Структура получается в lili
+});
+
+
+
+
 /*
 $(document).on('click', '#save-desktop', function(e) {
     window.location.hash = "#desktop";
 });
 */
 //console.log($); // Проверка, загружена ли вообще jQuery
+
